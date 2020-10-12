@@ -19,6 +19,9 @@ from .front import guild_ids
 from ruqqus.classes.rules import *
 from flask import *
 
+from ruqqus.classes.publiclog import PublicLog
+from ruqqus.routes.publiclog log_add
+
 from ruqqus.__main__ import app, limiter, cache
 
 valid_board_regex = re.compile("^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}$")
@@ -129,6 +132,8 @@ def create_board_post(v):
 
     # clear cache
     cache.delete_memoized(guild_ids, sort="new")
+    
+    log_add(f'Created board {board_name}',v=v)
 
     return redirect(new_board.permalink)
 
@@ -297,6 +302,8 @@ def mod_ban_bid_user(bid, board, v):
 
         text = f"You have been exiled from +{board.name}.\n\nNone of your existing posts or comments have been removed, however, you will not be able to make any new posts or comments in +{board.name}."
         send_notification(user, text)
+    
+    log_add(f'Exiled user {user.username} from board {board.name}',v=v)
 
     return "", 204
 
@@ -316,6 +323,8 @@ def mod_unban_bid_user(bid, board, v):
     x.is_active = False
 
     g.db.add(x)
+    
+    log_add(f'Exiled user {user.username} from {board_name}',v=v)
 
     return "", 204
 
@@ -355,6 +364,8 @@ def user_kick_pid(pid, v):
 
     # clear board's listing caches
     cache.delete_memoized(Board.idlist, current_board)
+    
+    log_add(f'Kicked post out of {board_name} (the post is here: {post.permalink})',v=v)
 
     return "", 204
 
@@ -398,6 +409,8 @@ def mod_take_pid(pid, v):
 
     # clear board's listing caches
     cache.delete_memoized(Board.idlist, board)
+    
+    log_add(f'Yanked a post to {board_name} (the post was {post.permalink})',v=v)
 
     return "", 204
 
