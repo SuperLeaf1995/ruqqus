@@ -9,8 +9,10 @@ class PublicLog(Base):
 	id = Column(BigInteger, primary_key=True)
 	author_id = Column(Integer)
 	content = Column(String(4095))
+	created_utc = Column(Integer)
 	
 	def __init__(self, *args, **kwargs):
+		kwargs["created_utc"] = int(time.time())
 		super().__init__(*args, **kwargs)
 	
 	def __repr__(self):
