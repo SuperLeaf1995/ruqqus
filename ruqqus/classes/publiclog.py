@@ -1,3 +1,5 @@
+import time
+
 from sqlalchemy import *
 from flask import g
 
