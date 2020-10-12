@@ -16,19 +16,17 @@ from ruqqus.__main__ import app, cache, limiter
 
 def log_add(content='', v=None):
 	if v == None:
-		body = f"A guest | {content}."
+		body = f"A guest {content}."
 	else:
-		body = f"{v.username} | {content}."
+		body = f"{v.username} {content}."
 	
 	log = PublicLog(content=body)
-	
-	log.id = '3'
 	
 	g.db.add(log)
 	g.db.commit()
 	return True
 
-@app.route("/log/obtain", methods=["GET"])
+@app.route("/logs", methods=["GET"])
 def log_obtain(v=None):
 	max_entries = request.args.get('number')
 	if max_entries == None or max_entries < 25:
@@ -39,4 +37,8 @@ def log_obtain(v=None):
 	if (len(logs) > max_entries):
 		logs = l1[:max_entries]
 	
-	return jsonify({'logs':[x.json for x in logs]})
+	for i in range(0,len(logs)):
+		logs[i].created_utc = time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(logs[i].created_utc))
+	
+	#return jsonify({'logs':[x.json for x in logs]})
+	return render_template('publiclogs-listing.html',logs=logs,v=v)
