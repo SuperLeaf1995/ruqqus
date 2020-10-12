@@ -65,6 +65,15 @@ def redditor_moment_redirect(username):
 
     return redirect(f"/@{username}")
 
+@app.route("/api/v1/user/by_id/<uid>", methods=["GET"])
+@auth_desired
+@api("read")
+def user_by_uid(uid):
+	user=g.db.query(User).filter_by(id=base36decode(uid)).first()
+	if user:
+		return jsonify(user.json)
+	else:
+		abort(404)
 
 @app.route("/@<username>", methods=["GET"])
 @app.route("/api/v1/user/<username>/listing", methods=["GET"])
