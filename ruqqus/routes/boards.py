@@ -252,7 +252,6 @@ def mod_accept_bid_pid(bid, pid, board, v):
 
     return "", 204
 
-
 @app.route("/mod/exile/<bid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -358,49 +357,49 @@ def user_kick_pid(pid, v):
 
     return "", 204
 
-
 @app.route("/mod/take/<pid>", methods=["POST"])
 @auth_required
 @validate_formkey
 def mod_take_pid(pid, v):
+    try:
+		bid = request.form.get("board_id", None)
+		if not bid:
+			abort(400)
 
-    bid = request.form.get("board_id", None)
-    if not bid:
-        abort(400)
+		board = get_board(bid)
+		post = get_post(pid)
 
-    board = get_board(bid)
-    post = get_post(pid)
+		if board.is_banned:
+			raise Exception(f"+{board.name} is banned. You can't yank anything there.")
 
-    if board.is_banned:
-        return jsonify({'error': f"+{board.name} is banned. You can't yank anything there."}), 403
+		if not post.board_id == 1:
+			raise Exception(f"This post is no longer in +general")
 
-    if not post.board_id == 1:
-        return jsonify({'error': f"This post is no longer in +general"}), 403
+		if not board.has_mod(v):
+			raise Exception(f"You are no longer a guildmaster of +{board.name}")
 
-    if not board.has_mod(v):
-        return jsonify({'error': f"You are no longer a guildmaster of +{board.name}"}), 403
+		if board.has_ban(post.author):
+			raise Exception(f"@{post.author.username} is exiled from +{board.name}, so you can't yank their post there.")
 
-    if board.has_ban(post.author):
-        return jsonify({'error': f"@{post.author.username} is exiled from +{board.name}, so you can't yank their post there."}), 403
+		if post.author.any_block_exists(v):
+			raise Exception(f"You can't yank @{post.author.username}'s content.")
 
-    if post.author.any_block_exists(v):
-        return jsonify({'error': f"You can't yank @{post.author.username}'s content."}), 403
+		if not board.can_take(post):
+			raise Exception(f"You can't yank this particular post to +{board.name}.")
 
-    if not board.can_take(post):
-        return jsonify({'error': f"You can't yank this particular post to +{board.name}."}), 403
+		if board.is_private and post.original_board_id != board.id:
+			raise Exception(f"+{board.name} is private, so you can only yank content that started there.")
 
-    if board.is_private and post.original_board_id != board.id:
-        return jsonify({'error': f"+{board.name} is private, so you can only yank content that started there."}), 403
+		post.board_id = board.id
+		post.guild_name = board.name
+		g.db.add(post)
 
-    post.board_id = board.id
-    post.guild_name = board.name
-    g.db.add(post)
+		# clear board's listing caches
+		cache.delete_memoized(Board.idlist, board)
 
-    # clear board's listing caches
-    cache.delete_memoized(Board.idlist, board)
-
-    return "", 204
-
+		return "", 204
+    except Exception as e:
+		return jsonify({'error': e}), 403
 
 @app.route("/mod/invite_mod/<bid>", methods=["POST"])
 @auth_required
