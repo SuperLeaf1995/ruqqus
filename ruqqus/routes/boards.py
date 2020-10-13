@@ -1294,6 +1294,77 @@ def siege_guild(v):
 
     return redirect(f"/+{guild.name}/mod/mods")
 
+@app.route("/api/v1/can_siege", methods=["GET"])
+@auth_desired
+@api("read")
+def siege_guild(v):
+    now = int(time.time())
+    guild = request.form.get("guild", None)
+
+    if not guild:
+        return jsonify({'error':'Guild does not exist','siegable':False})
+
+    guild = get_guild(guild)
+
+    # Cannot siege +general, +ruqqus, +ruqquspress, +ruqqusdmca
+    if guild.id in [1, 2, 10, 1000]:
+        return jsonify({'erorr':'Cannot siege admin controlled guild','siegable':False})
+
+    # Assemble list of mod ids to check
+    # skip any user with a perm site-wide ban
+    # skip any deleted mod
+    mods = []
+    for user in guild.mods:
+        if user.id == v.id:
+            break
+        if not (user.is_banned and user.unban_utc ==
+                0) and not user.is_deleted:
+            mods.append(user)
+
+    # if no mods, skip straight to success
+    if mods:
+        ids = [x.id for x in mods]
+
+        # cutoff
+        cutoff = now - 60 * 60 * 24 * 60
+
+        # check submissions
+        if g.db.query(Submission).filter(Submission.author_id.in_(
+                ids), Submission.created_utc > cutoff).first():
+            return jsonify({'erorr':'Guildmaster had a post more recent than 60 days','siegable':False})
+
+        # check comments
+        if g.db.query(Comment).filter(Comment.author_id.in_(ids),
+                                      Comment.created_utc > cutoff).first():
+            return jsonify({'erorr':'Guildmaster had a comment more recent than 60 days','siegable':False})
+
+        # check post votes
+        if g.db.query(Vote).filter(Vote.user_id.in_(ids),
+                                   Vote.created_utc > cutoff).first():
+            return jsonify({'erorr':'Guildmaster had a post vote more recent than 60 days','siegable':False})
+
+        # check comment votes
+        if g.db.query(CommentVote).filter(CommentVote.user_id.in_(
+                ids), CommentVote.created_utc > cutoff).first():
+            return jsonify({'erorr':'Guildmaster had a comment vote more recent than 60 days','siegable':False})
+
+        # check flags
+        if g.db.query(Flag).filter(Flag.user_id.in_(ids),
+                                   Flag.created_utc > cutoff).first():
+            return jsonify({'erorr':'Guildmaster had activity recently in 60 days (flagging)','siegable':False})
+        
+        # check reports
+        if g.db.query(Report).filter(Report.user_id.in_(ids),
+                                     Report.created_utc > cutoff).first():
+            return jsonify({'erorr':'Guildmaster had activity recently in 60 days (report)','siegable':False})
+
+        # check exiles
+        if g.db.query(BanRelationship).filter(BanRelationship.banning_mod_id.in_(
+                ids), BanRelationship.created_utc > cutoff).first():
+            return jsonify({'erorr':'Guildmaster had activity recently in 60 days (exiles)','siegable':False})
+
+    #Siege is possible
+    return jsonify({'siegable':True})
 
 @app.route("/mod/post_pin/<bid>/<pid>/<x>", methods=["POST"])
 @auth_required
