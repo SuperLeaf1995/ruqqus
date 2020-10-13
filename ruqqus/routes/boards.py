@@ -1297,7 +1297,7 @@ def siege_guild(v):
 @app.route("/api/v1/can_siege", methods=["GET"])
 @auth_desired
 @api("read")
-def siege_guild(v):
+def can_siege_guild(v):
     now = int(time.time())
     guild = request.args.get("guild", None)
 
