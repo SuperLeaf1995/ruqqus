@@ -362,51 +362,51 @@ def user_kick_pid(pid, v):
 @validate_formkey
 def mod_take_pid(pid, v):
     try:
-		bid = request.form.get("board_id", None)
-		if not bid:
-			abort(400)
+        bid = request.form.get("board_id", None)
+        if not bid:
+            abort(400)
 
-		board = get_board(bid)
-		if not board:
-			raise Exception(f"Board does not exist.")
-		
-		post = get_post(pid)
-		if not post:
-			raise Exception(f"Post does not exist.")
+        board = get_board(bid)
+        if not board:
+            raise Exception(f"Board does not exist.")
+        
+        post = get_post(pid)
+        if not post:
+            raise Exception(f"Post does not exist.")
 
-		if board.is_banned:
-			raise Exception(f"+{board.name} is banned. You can't yank anything there.")
+        if board.is_banned:
+            raise Exception(f"+{board.name} is banned. You can't yank anything there.")
 
-		if not post.board_id == 1:
-			raise Exception(f"This post is no longer in +general")
+        if not post.board_id == 1:
+            raise Exception(f"This post is no longer in +general")
 
-		if not board.has_mod(v):
-			raise Exception(f"You are no longer a guildmaster of +{board.name}")
+        if not board.has_mod(v):
+            raise Exception(f"You are no longer a guildmaster of +{board.name}")
 
-		if board.has_ban(post.author):
-			raise Exception(f"@{post.author.username} is exiled from +{board.name}, so you can't yank their post there.")
+        if board.has_ban(post.author):
+            raise Exception(f"@{post.author.username} is exiled from +{board.name}, so you can't yank their post there.")
 
-		if post.author.any_block_exists(v):
-			raise Exception(f"You can't yank @{post.author.username}'s content.")
+        if post.author.any_block_exists(v):
+            raise Exception(f"You can't yank @{post.author.username}'s content.")
 
-		if not board.can_take(post):
-			raise Exception(f"You can't yank this particular post to +{board.name}.")
+        if not board.can_take(post):
+            raise Exception(f"You can't yank this particular post to +{board.name}.")
 
-		if board.is_private and post.original_board_id != board.id:
-			raise Exception(f"+{board.name} is private, so you can only yank content that started there.")
+        if board.is_private and post.original_board_id != board.id:
+            raise Exception(f"+{board.name} is private, so you can only yank content that started there.")
 
-		# Change the post's board to this new one
-		# And add it to the database
-		post.board_id = board.id
-		post.guild_name = board.name
-		g.db.add(post)
+        # Change the post's board to this new one
+        # And add it to the database
+        post.board_id = board.id
+        post.guild_name = board.name
+        g.db.add(post)
 
-		# Clear board's listing caches
-		cache.delete_memoized(Board.idlist, board)
+        # Clear board's listing caches
+        cache.delete_memoized(Board.idlist, board)
 
-		return "", 204
+        return "", 204
     except Exception as e:
-		return jsonify({'error': e}), 403
+        return jsonify({'error': e}), 403
 
 @app.route("/mod/invite_mod/<bid>", methods=["POST"])
 @auth_required
