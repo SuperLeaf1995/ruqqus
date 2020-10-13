@@ -1302,13 +1302,13 @@ def can_siege_guild(v):
     guild = request.args.get("guild", None)
 
     if not guild:
-        return jsonify({'error':f'Guild +{guild} does not exist','siegable':False})
+        return jsonify({'error':f'Guild +{guild.name} does not exist','siegable':False})
 
     guild = get_guild(guild)
 
     # Cannot siege +general, +ruqqus, +ruqquspress, +ruqqusdmca
     if guild.id in [1, 2, 10, 1000]:
-        return jsonify({'erorr':f'Cannot siege admin controlled guild +{guild}','siegable':False})
+        return jsonify({'erorr':f'Cannot siege admin controlled guild +{guild.name}','siegable':False})
 
     # Assemble list of mod ids to check
     # skip any user with a perm site-wide ban
