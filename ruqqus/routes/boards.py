@@ -1299,7 +1299,7 @@ def siege_guild(v):
 @api("read")
 def siege_guild(v):
     now = int(time.time())
-    guild = request.form.get("guild", None)
+    guild = request.args.get("guild", None)
 
     if not guild:
         return jsonify({'error':'Guild does not exist','siegable':False})
