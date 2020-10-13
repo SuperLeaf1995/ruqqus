@@ -1302,13 +1302,13 @@ def can_siege_guild(v):
     guild = request.args.get("guild", None)
 
     if not guild:
-        return jsonify({'error':'Guild does not exist','siegable':False})
+        return jsonify({'error':f'Guild +{guild} does not exist','siegable':False})
 
     guild = get_guild(guild)
 
     # Cannot siege +general, +ruqqus, +ruqquspress, +ruqqusdmca
     if guild.id in [1, 2, 10, 1000]:
-        return jsonify({'erorr':'Cannot siege admin controlled guild','siegable':False})
+        return jsonify({'erorr':f'Cannot siege admin controlled guild +{guild}','siegable':False})
 
     # Assemble list of mod ids to check
     # skip any user with a perm site-wide ban
@@ -1352,7 +1352,7 @@ def can_siege_guild(v):
         if g.db.query(Flag).filter(Flag.user_id.in_(ids),
                                    Flag.created_utc > cutoff).first():
             return jsonify({'erorr':'Guildmaster had activity recently in 60 days (flagging)','siegable':False})
-        
+
         # check reports
         if g.db.query(Report).filter(Report.user_id.in_(ids),
                                      Report.created_utc > cutoff).first():
