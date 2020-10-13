@@ -367,7 +367,12 @@ def mod_take_pid(pid, v):
 			abort(400)
 
 		board = get_board(bid)
+		if not board:
+			raise Exception(f"Board does not exist.")
+		
 		post = get_post(pid)
+		if not post:
+			raise Exception(f"Post does not exist.")
 
 		if board.is_banned:
 			raise Exception(f"+{board.name} is banned. You can't yank anything there.")
@@ -390,11 +395,13 @@ def mod_take_pid(pid, v):
 		if board.is_private and post.original_board_id != board.id:
 			raise Exception(f"+{board.name} is private, so you can only yank content that started there.")
 
+		# Change the post's board to this new one
+		# And add it to the database
 		post.board_id = board.id
 		post.guild_name = board.name
 		g.db.add(post)
 
-		# clear board's listing caches
+		# Clear board's listing caches
 		cache.delete_memoized(Board.idlist, board)
 
 		return "", 204
