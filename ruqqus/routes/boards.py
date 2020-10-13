@@ -1316,7 +1316,7 @@ def can_siege_guild(v):
     mods = []
     for user in guild.mods:
         if user.id == v.id:
-            break
+            return jsonify({'erorr':'Already a guildmaster','siegable':False})
         if not (user.is_banned and user.unban_utc ==
                 0) and not user.is_deleted:
             mods.append(user)
