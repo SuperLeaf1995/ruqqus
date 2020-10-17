@@ -420,7 +420,7 @@ def api_comment(v):
             "api": lambda: c.json
             }
 
-
+@app.route("/api/v1/edit_comment/<cid>", methods=["POST"])
 @app.route("/edit_comment/<cid>", methods=["POST"])
 @is_not_banned
 @validate_formkey
