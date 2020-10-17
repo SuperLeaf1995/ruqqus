@@ -23,7 +23,6 @@ from ruqqus.__main__ import app, limiter, cache
 
 valid_board_regex = re.compile("^[a-zA-Z0-9][a-zA-Z0-9_]{2,24}$")
 
-
 @app.route("/create_guild", methods=["GET"])
 @is_not_banned
 def create_board_get(v):
@@ -51,7 +50,7 @@ def create_board_get(v):
 @app.route("/api/board_available/<name>", methods=["GET"])
 @app.route("/api/v1/board_available/<name>", methods=["GET"])
 @auth_desired
-@api()
+@api("read")
 def api_board_available(name, v):
     if get_guild(name, graceful=True):
         return jsonify({"board": name, "available": False})
@@ -215,7 +214,7 @@ def board_name(name, v):
                                    )
             }
 
-
+@app.route("/api/v1/mod/kick/<bid>/<pid>", methods=["POST"])
 @app.route("/mod/kick/<bid>/<pid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -236,7 +235,7 @@ def mod_kick_bid_pid(bid, pid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/accept/<bid>/<pid>", methods=["POST"])
 @app.route("/mod/accept/<bid>/<pid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -252,7 +251,7 @@ def mod_accept_bid_pid(bid, pid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/exile/<bid>", methods=["POST"])
 @app.route("/mod/exile/<bid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -300,7 +299,7 @@ def mod_ban_bid_user(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/unexile/<bid>", methods=["POST"])
 @app.route("/mod/unexile/<bid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -319,7 +318,7 @@ def mod_unban_bid_user(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/user/kick/<pid>", methods=["POST"])
 @app.route("/user/kick/<pid>", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -358,7 +357,7 @@ def user_kick_pid(pid, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/take/<pid>", methods=["POST"])
 @app.route("/mod/take/<pid>", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -401,7 +400,7 @@ def mod_take_pid(pid, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/invite_mod/<bid>", methods=["POST"])
 @app.route("/mod/invite_mod/<bid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -440,7 +439,7 @@ def mod_invite_username(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/rescing/<username>", methods=["POST"])
 @app.route("/mod/<bid>/rescind/<username>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -461,7 +460,7 @@ def mod_rescind_bid_username(bid, username, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/accept/<bid>", methods=["POST"])
 @app.route("/mod/accept/<bid>", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -481,7 +480,7 @@ def mod_accept_board(bid, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/remove/<username>", methods=["POST"])
 @app.route("/mod/<bid>/remove/<username>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -505,7 +504,7 @@ def mod_remove_username(bid, username, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/is_banned/<bid>/<username>", methods=["GET"])
 @app.route("/mod/is_banned/<bid>/<username>", methods=["GET"])
 @auth_required
 @is_guildmaster
@@ -524,7 +523,7 @@ def mod_is_banned_board_username(bid, username, board, v):
 
     return jsonify(result)
 
-
+@app.route("/api/v1/mod/<bid>/settings/over_18", methods=["POST"])
 @app.route("/mod/<bid>/settings/over_18", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -538,7 +537,7 @@ def mod_bid_settings_nsfw(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/settings/opt_out", methods=["POST"])
 @app.route("/mod/<bid>/settings/opt_out", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -552,7 +551,7 @@ def mod_bid_settings_optout(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/settings/downdisable", methods=["POST"])
 @app.route("/mod/<bid>/settings/downdisable", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -569,7 +568,7 @@ def mod_bid_settings_downdisable(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/settings/restricted", methods=["POST"])
 @app.route("/mod/<bid>/settings/restricted", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -600,7 +599,7 @@ def mod_bid_settings_private(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/settings/name", methods=["POST"])
 @app.route("/mod/<bid>/settings/name", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -617,7 +616,7 @@ def mod_bid_settings_name(bid, board, v):
     else:
         return "", 422
 
-
+@app.route("/api/v1/mod/<bid>/settings/description", methods=["POST"])
 @app.route("/mod/<bid>/settings/description", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -636,7 +635,7 @@ def mod_bid_settings_description(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/settings/banner", methods=["POST"])
 @app.route("/mod/<bid>/settings/banner", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -652,7 +651,7 @@ def mod_settings_toggle_banner(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/settings/add_rule", methods=["POST"])
 @app.route("/mod/<bid>/settings/add_rule", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -679,7 +678,7 @@ def mod_add_rule(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/<bid>/settings/edit_rule", methods=["POST"])
 @app.route("/mod/<bid>/settings/edit_rule", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -709,7 +708,6 @@ def mod_edit_rule(bid, board, v):
     g.db.add(r)
 
     return "", 204
-
 
 @app.route("/+<boardname>/mod/settings", methods=["GET"])
 @auth_required
@@ -771,7 +769,7 @@ def board_about_contributors(boardname, board, v):
     return render_template("guild/contributors.html", v=v,
                            b=board, contributors=contributors)
 
-
+@app.route("/api/v1/board/subscribe/<boardname>", methods=["POST"])
 @app.route("/api/subscribe/<boardname>", methods=["POST"])
 @auth_required
 def subscribe_board(boardname, v):
@@ -808,7 +806,7 @@ def subscribe_board(boardname, v):
 
     return jsonify({"message": f"Joined +{board.name}"}), 200
 
-
+@app.route("/api/v1/board/unsubscribe/<boardname>", methods=["POST"])
 @app.route("/api/unsubscribe/<boardname>", methods=["POST"])
 @auth_required
 def unsubscribe_board(boardname, v):
@@ -1070,7 +1068,7 @@ def mod_board_color(bid, board, v):
 
     return redirect(f"/+{board.name}/mod/appearance?msg=Success")
 
-
+@app.route("/api/v1/mod/approve/<bid>", methods=["POST"])
 @app.route("/mod/approve/<bid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -1108,7 +1106,7 @@ def mod_approve_bid_user(bid, board, v):
 
     return "", 204
 
-
+@app.route("/api/v1/mod/unapprove/<bid>", methods=["POST"])
 @app.route("/mod/unapprove/<bid>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -1294,7 +1292,7 @@ def siege_guild(v):
 
     return redirect(f"/+{guild.name}/mod/mods")
 
-
+@app.route("/api/v1/mod/post_pin/<bid>/<pid>/<x>", methods=["POST"])
 @app.route("/mod/post_pin/<bid>/<pid>/<x>", methods=["POST"])
 @auth_required
 @is_guildmaster
@@ -1354,7 +1352,7 @@ def board_comments(boardname, v):
                                             next_exists=next_exists),
             "api": lambda: jsonify({"data": [x.json for x in comments]})}
 
-
+@app.route("/api/v1/mod/<bid>/category/<category>", methods=["POST"])
 @app.route("/mod/<bid>/category/<category>", methods=["POST"])
 @auth_required
 @is_guildmaster
