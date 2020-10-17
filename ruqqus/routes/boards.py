@@ -57,10 +57,11 @@ def api_board_available(name, v):
     else:
         return jsonify({"board": name, "available": True})
 
-
+@app.route("/api/v1/create_guild", methods=["POST"])
 @app.route("/create_guild", methods=["POST"])
 @is_not_banned
 @validate_formkey
+@api("create")
 def create_board_post(v):
     if not v.can_make_guild:
         return render_template("make_board.html",
@@ -219,6 +220,7 @@ def board_name(name, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_kick_bid_pid(bid, pid, board, v):
 
     post = get_post(pid)
@@ -240,6 +242,7 @@ def mod_kick_bid_pid(bid, pid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_accept_bid_pid(bid, pid, board, v):
 
     post = get_post(pid)
@@ -256,6 +259,7 @@ def mod_accept_bid_pid(bid, pid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_ban_bid_user(bid, board, v):
 
     user = get_user(request.form.get("username"), graceful=True)
@@ -304,6 +308,7 @@ def mod_ban_bid_user(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_unban_bid_user(bid, board, v):
 
     user = get_user(request.values.get("username"))
@@ -322,6 +327,7 @@ def mod_unban_bid_user(bid, board, v):
 @app.route("/user/kick/<pid>", methods=["POST"])
 @auth_required
 @validate_formkey
+@api("guildmaster")
 def user_kick_pid(pid, v):
 
     # allows a user to yank their content back to +general if it was there
@@ -361,6 +367,7 @@ def user_kick_pid(pid, v):
 @app.route("/mod/take/<pid>", methods=["POST"])
 @auth_required
 @validate_formkey
+@api("guildmaster")
 def mod_take_pid(pid, v):
 
     bid = request.form.get("board_id", None)
@@ -405,6 +412,7 @@ def mod_take_pid(pid, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_invite_username(bid, board, v):
 
     username = request.form.get("username", '').lstrip('@')
@@ -444,6 +452,7 @@ def mod_invite_username(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_rescind_bid_username(bid, username, board, v):
 
     user = get_user(username)
@@ -464,6 +473,7 @@ def mod_rescind_bid_username(bid, username, board, v):
 @app.route("/mod/accept/<bid>", methods=["POST"])
 @auth_required
 @validate_formkey
+@api("guildmaster")
 def mod_accept_board(bid, v):
 
     board = get_board(bid)
@@ -485,6 +495,7 @@ def mod_accept_board(bid, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_remove_username(bid, username, board, v):
 
     user = get_user(username)
@@ -509,6 +520,7 @@ def mod_remove_username(bid, username, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_is_banned_board_username(bid, username, board, v):
 
     user = get_user(username)
@@ -528,6 +540,7 @@ def mod_is_banned_board_username(bid, username, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_bid_settings_nsfw(bid, board, v):
 
     # nsfw
@@ -542,6 +555,7 @@ def mod_bid_settings_nsfw(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_bid_settings_optout(bid, board, v):
 
     # nsfw
@@ -556,6 +570,7 @@ def mod_bid_settings_optout(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_bid_settings_downdisable(bid, board, v):
 
     # disable downvoting
@@ -573,6 +588,7 @@ def mod_bid_settings_downdisable(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_bid_settings_restricted(bid, board, v):
 
     # toggle restricted setting
@@ -590,6 +606,7 @@ def mod_bid_settings_restricted(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_bid_settings_private(bid, board, v):
 
     # toggle privacy setting
@@ -604,6 +621,7 @@ def mod_bid_settings_private(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_bid_settings_name(bid, board, v):
     # name capitalization
     new_name = request.form.get("guild_name", "").lstrip("+")
@@ -621,6 +639,7 @@ def mod_bid_settings_name(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_bid_settings_description(bid, board, v):
     # board description
     description = request.form.get("description")
@@ -640,6 +659,7 @@ def mod_bid_settings_description(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_settings_toggle_banner(bid, board, v):
     # toggle show/hide banner
     board.hide_banner_data = bool(
@@ -656,6 +676,7 @@ def mod_settings_toggle_banner(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_add_rule(bid, board, v):
     # board description
     rule = request.form.get("rule1")
@@ -683,6 +704,7 @@ def mod_add_rule(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_edit_rule(bid, board, v):
     r = base36decode(request.form.get("rid"))
     r = g.db.query(Rules).filter_by(id=r)
@@ -772,6 +794,7 @@ def board_about_contributors(boardname, board, v):
 @app.route("/api/v1/board/subscribe/<boardname>", methods=["POST"])
 @app.route("/api/subscribe/<boardname>", methods=["POST"])
 @auth_required
+@api("guildmaster")
 def subscribe_board(boardname, v):
 
     board = get_guild(boardname)
@@ -809,6 +832,7 @@ def subscribe_board(boardname, v):
 @app.route("/api/v1/board/unsubscribe/<boardname>", methods=["POST"])
 @app.route("/api/unsubscribe/<boardname>", methods=["POST"])
 @auth_required
+@api("guildmaster")
 def unsubscribe_board(boardname, v):
 
     board = get_guild(boardname)
@@ -1073,6 +1097,7 @@ def mod_board_color(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_approve_bid_user(bid, board, v):
 
     user = get_user(request.form.get("username"), graceful=True)
@@ -1111,6 +1136,7 @@ def mod_approve_bid_user(bid, board, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_unapprove_bid_user(bid, board, v):
 
     user = get_user(request.values.get("username"))
@@ -1297,6 +1323,7 @@ def siege_guild(v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def mod_toggle_post_pin(bid, pid, x, board, v):
 
     post = get_post(pid)
@@ -1357,6 +1384,7 @@ def board_comments(boardname, v):
 @auth_required
 @is_guildmaster
 @validate_formkey
+@api("guildmaster")
 def change_guild_category(v, board, bid, category):
 
     board.category = category
