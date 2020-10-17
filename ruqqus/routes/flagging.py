@@ -6,9 +6,11 @@ from ruqqus.helpers.base36 import *
 from flask import g
 from ruqqus.__main__ import app
 
-
+@app.route("/api/v1/flag/post/<pid>", methods=["POST"])
 @app.route("/api/flag/post/<pid>", methods=["POST"])
 @is_not_banned
+@auth_desired
+@api("update")
 def api_flag_post(pid, v):
 
     post = get_post(pid)
@@ -47,9 +49,11 @@ def api_flag_post(pid, v):
 
     return "", 204
 
-
+@app.route("/api/v1/flag/comment/<cid>", methods=["POST"])
 @app.route("/api/flag/comment/<cid>", methods=["POST"])
 @is_not_banned
+@auth_desired
+@api("update")
 def api_flag_comment(cid, v):
 
     comment = get_comment(cid)
