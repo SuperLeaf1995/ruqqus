@@ -1339,14 +1339,14 @@ def can_siege_guild(v):
             return jsonify({'erorr':'Guildmaster had a comment more recent than 60 days','siegable':False})
 
         # check post votes
-        if g.db.query(Vote).filter(Vote.user_id.in_(ids),
-                                   Vote.created_utc > cutoff).first():
-            return jsonify({'erorr':'Guildmaster had a post vote more recent than 60 days','siegable':False})
+        #if g.db.query(Vote).filter(Vote.user_id.in_(ids),
+        #                           Vote.created_utc > cutoff).first():
+        #    return jsonify({'erorr':'Guildmaster had a post vote more recent than 60 days','siegable':False})
 
         # check comment votes
-        if g.db.query(CommentVote).filter(CommentVote.user_id.in_(
-                ids), CommentVote.created_utc > cutoff).first():
-            return jsonify({'erorr':'Guildmaster had a comment vote more recent than 60 days','siegable':False})
+        #if g.db.query(CommentVote).filter(CommentVote.user_id.in_(
+        #        ids), CommentVote.created_utc > cutoff).first():
+        #    return jsonify({'erorr':'Guildmaster had a comment vote more recent than 60 days','siegable':False})
 
         # check flags
         if g.db.query(Flag).filter(Flag.user_id.in_(ids),
