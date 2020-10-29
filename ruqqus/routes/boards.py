@@ -1139,6 +1139,10 @@ def guild_profile(guild):
     else:
         return redirect(x.profile_url)
 
+def notify_of_failed_siege(guild,v):
+    for x in guild.moderators:
+        if x.accepted:
+            send_notification(x.user,f"An attempt by {v.username} to siege +{guild.name} has failed.")
 
 @app.route("/siege_guild", methods=["POST"])
 @is_not_banned
@@ -1167,6 +1171,7 @@ def siege_guild(v):
 
     # check guild count
     if not v.can_join_gms and guild not in v.boards_modded:
+        notify_of_failed_siege(guild,v)
         return render_template("message.html",
                                v=v,
                                title=f"Siege against +{guild.name} Failed",
@@ -1175,6 +1180,7 @@ def siege_guild(v):
 
     # Cannot siege +general, +ruqqus, +ruqquspress, +ruqqusdmca
     if not guild.is_siegable:
+        notify_of_failed_siege(guild,v)
         return render_template("message.html",
                                v=v,
                                title=f"Siege against +{guild.name} Failed",
@@ -1214,6 +1220,7 @@ def siege_guild(v):
 
         if g.db.query(Submission).filter(Submission.author_id.in_(
                 ids), Submission.created_utc > cutoff).first():
+            notify_of_failed_siege(guild,v)
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
@@ -1223,6 +1230,7 @@ def siege_guild(v):
         # check comments
         if g.db.query(Comment).filter(Comment.author_id.in_(ids),
                                       Comment.created_utc > cutoff).first():
+            notify_of_failed_siege(guild,v)
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
@@ -1232,6 +1240,7 @@ def siege_guild(v):
         # check post votes
         if g.db.query(Vote).filter(Vote.user_id.in_(ids),
                                    Vote.created_utc > cutoff).first():
+            notify_of_failed_siege(guild,v)
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
@@ -1241,6 +1250,7 @@ def siege_guild(v):
         # check comment votes
         if g.db.query(CommentVote).filter(CommentVote.user_id.in_(
                 ids), CommentVote.created_utc > cutoff).first():
+            notify_of_failed_siege(guild,v)
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
@@ -1250,6 +1260,7 @@ def siege_guild(v):
         # check flags
         if g.db.query(Flag).filter(Flag.user_id.in_(ids),
                                    Flag.created_utc > cutoff).first():
+            notify_of_failed_siege(guild,v)
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
@@ -1258,6 +1269,7 @@ def siege_guild(v):
         # check reports
         if g.db.query(Report).filter(Report.user_id.in_(ids),
                                      Report.created_utc > cutoff).first():
+            notify_of_failed_siege(guild,v)
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
@@ -1267,6 +1279,7 @@ def siege_guild(v):
         # check exiles
         if g.db.query(BanRelationship).filter(BanRelationship.banning_mod_id.in_(
                 ids), BanRelationship.created_utc > cutoff).first():
+            notify_of_failed_siege(guild,v)
             return render_template("message.html",
                                    v=v,
                                    title=f"Siege against +{guild.name} Failed",
@@ -1294,7 +1307,6 @@ def siege_guild(v):
         g.db.add(new_mod)
 
     return redirect(f"/+{guild.name}/mod/mods")
-
 
 @app.route("/mod/post_pin/<bid>/<pid>/<x>", methods=["POST"])
 @auth_required
