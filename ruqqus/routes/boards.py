@@ -146,7 +146,7 @@ def board_name(name, v):
 
     board = get_guild(name)
 
-    if not board.name == name and not request.path.startswith('/api/v1'):
+    if not board.name.lower() == name.lower() and not request.path.startswith('/api/v1'):
         return redirect(request.path.replace(name, board.name))
 
     if board.is_banned and not (v and v.admin_level >= 3):
