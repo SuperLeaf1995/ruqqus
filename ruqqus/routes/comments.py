@@ -18,7 +18,7 @@ from ruqqus.__main__ import app, limiter
 from werkzeug.contrib.atom import AtomFeed
 from datetime import datetime
 
-
+@app.route("/post_short/<pid>/<cid>/", methods=["GET"])
 @app.route("/comment/<cid>", methods=["GET"])
 @app.route("/post_short/<pid>/<cid>", methods=["GET"])
 def comment_cid(cid, pid=None):
@@ -27,7 +27,6 @@ def comment_cid(cid, pid=None):
     if not comment.parent_submission:
         abort(403)
     return redirect(comment.permalink)
-
 
 @app.route("/post/<p_id>/<anything>/<c_id>", methods=["GET"])
 @app.route("/api/v1/post/<p_id>/comment/<c_id>", methods=["GET"])
