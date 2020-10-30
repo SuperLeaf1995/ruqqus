@@ -74,6 +74,10 @@ def user_by_uid(uid, v=None):
     return redirect(f"/api/v1/user/{user.username}")
         
 @app.route("/u/<username>", methods=["GET"])
+def redditor_moment_redirect(username):
+
+    return redirect(f"/@{username}")
+
 @app.route("/@<username>", methods=["GET"])
 @app.route("/api/v1/user/<username>/listing", methods=["GET"])
 @auth_desired
