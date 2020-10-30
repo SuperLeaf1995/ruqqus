@@ -534,12 +534,13 @@ def submit_post(v):
     g.db.add(new_post_aux)
     g.db.flush()
 
-    vote = Vote(user_id=v.id,
-                vote_type=1,
-                submission_id=new_post.id
-                )
-    g.db.add(vote)
-    g.db.flush()
+    if not request.headers.get("X-User-Type","") == "Bot":
+        vote = Vote(user_id=v.id,
+                    vote_type=1,
+                    submission_id=new_post.id
+                    )
+        g.db.add(vote)
+        g.db.flush()
 
     g.db.commit()
     g.db.refresh(new_post)
