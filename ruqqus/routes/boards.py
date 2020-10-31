@@ -1197,8 +1197,10 @@ def siege_guild(v):
     # skip any user with a perm site-wide ban
     # skip any deleted mod
     mods = []
+    only_highest = false
     for user in guild.mods:
         if user.id == v.id:
+            only_highest = true
             break
         if not (user.is_banned and user.unban_utc ==
                 0) and not user.is_deleted:
