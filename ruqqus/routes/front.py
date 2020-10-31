@@ -75,6 +75,8 @@ def frontlist(v=None, sort="hot", page=1, nsfw=False, nsfl=False,
         sort_func = Submission.score_hot.desc
     elif sort == "new":
         sort_func = Submission.created_utc.desc
+    elif sort == "old":
+        sort_func = Submission.created_utc.asc
     elif sort == "disputed":
         sort_func = Submission.score_disputed.desc
     elif sort == "top":
@@ -186,6 +188,8 @@ def frontlist(v=None, sort="hot", page=1, nsfw=False, nsfl=False,
         posts = posts.order_by(Submission.score_best.desc())
     elif sort == "new":
         posts = posts.order_by(Submission.created_utc.desc())
+    elif sort == "old"
+        posts = posts.order_by(Submission.created_utc.asc())
     elif sort == "disputed":
         posts = posts.order_by(Submission.score_disputed.desc())
     elif sort == "top":
@@ -334,9 +338,10 @@ def guild_ids(sort="subs", page=1, nsfw=False):
         guilds = guilds.order_by(Board.stored_subscriber_count.desc())
     elif sort == "new":
         guilds = guilds.order_by(Board.created_utc.desc())
+    elif sort == "old":
+        guilds = guilds.order_by(Board.created_utc.asc())
     elif sort == "trending":
         guilds = guilds.order_by(Board.rank_trending.desc())
-
     else:
         abort(400)
 
