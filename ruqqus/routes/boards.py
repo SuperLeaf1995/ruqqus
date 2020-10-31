@@ -1279,11 +1279,14 @@ def siege_guild(v):
 
     # delete and notify mods
     for x in guild.moderators:
-
         if x.accepted:
             send_notification(x.user,
                               f"You have been overthrown from +{guild.name}.")
         g.db.delete(x)
+        
+        # only remove first inactive mod on the modlist
+        if only_highest == true:
+            break
 
     # add new mod if user is not already
     if not guild.has_mod(v):
