@@ -1199,7 +1199,11 @@ def siege_guild(v):
     mods = []
     for user in guild.mods:
         if user.id == v.id:
-            break
+            return render_template("message.html",
+                                   v=v,
+                                   title=f"Siege against +{guild.name} Failed",
+                                   error="Your siege failed. You are already guildmaster of this guild."
+                                   ), 403
         if not (user.is_banned and user.unban_utc ==
                 0) and not user.is_deleted:
             mods.append(user)
