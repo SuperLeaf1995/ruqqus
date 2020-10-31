@@ -69,15 +69,15 @@ else:
 app.config["CACHE_DIR"]=environ.get("CACHE_DIR", "ruqquscache")
 
 #captcha configs
-app.config["HCAPTCHA_SITEKEY"]=environ.get("HCAPTCHA_SITEKEY")
-app.config["HCAPTCHA_SECRET"]=environ.get("HCAPTCHA_SECRET").lstrip().rstrip()
+app.config["HCAPTCHA_SITEKEY"]=environ.get("HCAPTCHA_SITEKEY","")
+app.config["HCAPTCHA_SECRET"]=environ.get("HCAPTCHA_SECRET","").lstrip().rstrip()
 
 #antispam configs
 app.config["SPAM_SIMILARITY_THRESHOLD"]=float(environ.get("SPAM_SIMILARITY_THRESHOLD", 0.5))
 app.config["SPAM_SIMILAR_COUNT_THRESHOLD"]=int(environ.get("SPAM_SIMILAR_COUNT_THRESHOLD", 5))
 app.config["SPAM_URL_SIMILARITY_THRESHOLD"]=float(environ.get("SPAM_URL_SIMILARITY_THRESHOLD", 0.1))
     
-app.config["CACHE_REDIS_URL"]=environ.get("REDIS_URL").rstrip() if environ.get("REDIS_URL") else None
+app.config["CACHE_REDIS_URL"]=environ.get("REDIS_URL","").rstrip() if environ.get("REDIS_URL","") else None
 app.config["CACHE_DEFAULT_TIMEOUT"]=60
 app.config["CACHE_KEY_PREFIX"]="flask_caching_"
 
