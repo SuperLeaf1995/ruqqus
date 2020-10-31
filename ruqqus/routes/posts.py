@@ -94,10 +94,11 @@ def post_base36id(boardname, base36id, anything=None, v=None):
 @auth_desired
 @api("read")
 def post_base36id_noboard(base36id, anything=None, v=None):
-    
-    post=get_post_with_comments(base36id, v=v, sort_type=request.args.get("sort","top"))
-
-    #board=post.board
+    # Instead of getting the entire post with comments we just obtain
+    # the post and use its permalink to do a nice redirection and save
+    # server time
+    # - superleaf1995
+    post=get_post(base36id, v=v)
     return redirect(post.permalink)
 
 
