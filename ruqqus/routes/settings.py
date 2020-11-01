@@ -414,10 +414,11 @@ def settings_blockedguilds(v):
     return render_template("settings_guildfilter.html",
                            v=v)
 
-
+@app.route("/api/v1/user/block")
 @app.route("/settings/block", methods=["POST"])
 @auth_required
 @validate_formkey
+@api("create")
 def settings_block_user(v):
 
     user = get_user(request.values.get("username"), graceful=True)
