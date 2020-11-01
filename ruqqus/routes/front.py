@@ -73,6 +73,10 @@ def frontlist(v=None, sort="hot", page=1, nsfw=False, nsfl=False,
 
     if sort == "hot":
         sort_func = Submission.score_hot.desc
+    elif sort == "upvote":
+        sort_func = Submission.upvotes.desc
+    elif sort == "downvote":
+        sort_func = Submission.downvotes.desc
     elif sort == "new":
         sort_func = Submission.created_utc.desc
     elif sort == "disputed":
