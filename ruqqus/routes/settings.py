@@ -443,6 +443,8 @@ def settings_block_user(v):
     cache.delete_memoized(v.idlist)
     #cache.delete_memoized(Board.idlist, v=v)
     cache.delete_memoized(frontlist, v=v)
+    
+    send_notification(user, f"You have been blocked by @{v.username}.")
 
     return jsonify({"message": f"@{user.username} blocked."})
 
@@ -463,6 +465,8 @@ def settings_unblock_user(v):
     cache.delete_memoized(v.idlist)
     #cache.delete_memoized(Board.idlist, v=v)
     cache.delete_memoized(frontlist, v=v)
+    
+    send_notification(user, f"You have been unblocked by @{v.username}.")
 
     return jsonify({"message": f"@{user.username} unblocked."})
 
