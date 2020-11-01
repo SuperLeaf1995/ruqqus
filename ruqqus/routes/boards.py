@@ -319,6 +319,8 @@ def mod_unban_bid_user(bid, board, v):
     x.is_active = False
 
     g.db.add(x)
+    
+    send_notification(user,f"Your exile from +{board.name} has been pardoned.\n\nYou may start participating again on +{board.name}.")
 
     return "", 204
 
