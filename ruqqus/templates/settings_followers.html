@@ -9,8 +9,13 @@
       <div class="settings-section rounded">
         <div class="d-flex">
           {% for x in v.follower_list(v) %}
-            
-          {% endif %}
+          <tr>
+            <td>
+              <a href="{{ x.permalink }}">
+              <img src="{{ x.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ x.username }}</a>
+            </td>
+          </tr>
+          {% endfor %}
         </div>
       </div>
     </div>
