@@ -557,7 +557,12 @@ class User(Base, Stndrd, Age_times):
             target_id=self.id, user_id=user.id).first()
 
     def follower_list(self, user):
-        return g.db.query(Follow).filter_by(target_id=self.id,user_id=user.id).all()
+        followers = g.db.query(Follow).filter_by(target_id=self.id,user_id=user.id).all()
+        foo = []
+        for f in followers:
+            u = g.db.query(User).filter_by(id=f.user_id).first()
+            foo.append(u)
+        return foo
 
     def set_profile(self, file):
 
