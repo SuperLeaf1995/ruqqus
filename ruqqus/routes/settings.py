@@ -418,7 +418,7 @@ def settings_blockedguilds(v):
 @app.route("/settings/block", methods=["POST"])
 @auth_required
 @validate_formkey
-@api("create")
+@api("update")
 def settings_block_user(v):
 
     user = get_user(request.values.get("username"), graceful=True)
@@ -447,10 +447,11 @@ def settings_block_user(v):
 
     return jsonify({"message": f"@{user.username} blocked."})
 
-
+@app.route("/api/v1/user/unblock")
 @app.route("/settings/unblock", methods=["POST"])
 @auth_required
 @validate_formkey
+@api("update")
 def settings_unblock_user(v):
 
     user = get_user(request.values.get("username"))
