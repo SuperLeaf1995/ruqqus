@@ -8,14 +8,18 @@
       <h2 class="h5">Followers</h2>
       <div class="settings-section rounded">
         <div class="d-flex">
-          {% for x in v.follower_list(v) %}
-          <tr>
-            <td>
-              <a href="{{ x.permalink }}">
-              <img src="{{ x.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ x.username }}</a>
-            </td>
-          </tr>
-          {% endfor %}
+          {% if not v.follower_list %}
+            <td>You don't have any followers yet.</td>
+          {% else %}
+            {% for x in v.follower_list %}
+            <tr>
+              <td>
+                <a href="{{ x.permalink }}">
+                <img src="{{ x.profile_url }}" class="profile-pic-20 align-top mr-2">@{{ x.username }}</a>
+              </td>
+            </tr>
+            {% endfor %}
+          {% endif %}
         </div>
       </div>
     </div>
