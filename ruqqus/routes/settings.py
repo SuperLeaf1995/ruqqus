@@ -9,6 +9,7 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.security import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.markdown import *
+from ruqqus.helpers.alerts import *
 from ruqqus.helpers.aws import check_csam_url
 from ruqqus.mail import *
 from .front import frontlist
