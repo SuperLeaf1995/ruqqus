@@ -1,0 +1,19 @@
+{% extends "settings.html" %}
+{% block pagetitle %}Followers - Ruqqus{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings">
+      <h2 class="h5">Followers</h2>
+      <div class="settings-section rounded">
+        <div class="d-flex">
+          {% for x in v.follower_list(v) %}
+            
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
