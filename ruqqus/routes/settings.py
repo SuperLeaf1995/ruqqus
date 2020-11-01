@@ -518,3 +518,8 @@ def settings_unblock_guild(v):
 def settings_apps(v):
 
     return render_template("settings_apps.html", v=v)
+
+@app.route("/settings/followers", methods=["GET"])
+@auth_required
+def settings_followers(v):
+    return render_template("settings_followers.html", v=v)
