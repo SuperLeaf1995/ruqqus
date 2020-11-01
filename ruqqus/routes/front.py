@@ -184,6 +184,10 @@ def frontlist(v=None, sort="hot", page=1, nsfw=False, nsfl=False,
 
     if sort == "hot":
         posts = posts.order_by(Submission.score_best.desc())
+    elif sort == "upvote":
+        posts = posts.order_by(Submission.upvotes.desc())
+    elif sort == "downvote":
+        posts = posts.order_by(Submission.downvotes.desc())
     elif sort == "new":
         posts = posts.order_by(Submission.created_utc.desc())
     elif sort == "disputed":
