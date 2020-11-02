@@ -164,6 +164,8 @@ def post_pid_comment_cid(c_id, p_id=None, boardname=None, anything=None, v=None)
                 comments = comms.order_by(Comment.score_top.asc()).all()
             elif sort_type == "new":
                 comments = comms.order_by(Comment.created_utc.desc()).all()
+            elif sort_type == "old":
+                comments = comms.order_by(Comment.created_utc.asc()).all()
             elif sort_type == "disputed":
                 comments = comms.order_by(Comment.score_disputed.asc()).all()
             elif sort_type == "random":
@@ -195,6 +197,8 @@ def post_pid_comment_cid(c_id, p_id=None, boardname=None, anything=None, v=None)
                 comments = comms.order_by(Comment.score_top.asc()).all()
             elif sort_type == "new":
                 comments = comms.order_by(Comment.created_utc.desc()).all()
+            elif sort_type == "old":
+                comments = comms.order_by(Comment.created_utc.asc()).all()
             elif sort_type == "disputed":
                 comments = comms.order_by(Comment.score_disputed.asc()).all()
             elif sort_type == "random":
