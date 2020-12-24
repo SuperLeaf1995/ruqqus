@@ -1,3 +1,27 @@
-language: python
-python: 3.7
-script: python3.7 test.py
+image: python:latest
+
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_DB: ruqqus_test
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .cache/pip
+    - venv/
+
+stages:
+  - test
+
+test:
+    script:
+    - pip3 install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip3 install -r requirements.txt
+    - python3 test.py
